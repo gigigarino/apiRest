@@ -58,6 +58,9 @@ func main() {
 	//PUT UPDATE
 	r.PUT("/books/:id", updateBook)
 
+	//delete 
+	r.DELETE("/books/:id", deleteBook)
+
 	r.Run(port) // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 
 	//msj de escuchando el puerto
@@ -179,3 +182,27 @@ func updateBook(ctx *gin.Context) {
 	})
 
 }
+
+func deleteBook(ctx *gin.Context) {
+	idParam := ctx.Param("id")
+
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": true,
+			"data": err.Error(),
+		})
+		return
+	}
+	for i,v := range db {
+		if v.ID == id {
+			db = append(db[:i], db[i+1:]...)
+		}
+		}
+			ctx.JSON(http.StatusOK, gin.H{
+				"error": false,
+				"data": db,
+			})
+		}
+	
+
